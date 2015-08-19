@@ -1,0 +1,129 @@
+#include <iostream>
+#include <cstdlib>
+#include <cmath>
+#include <fstream>
+#include <iomanip>
+using namespace std;
+
+int main ()
+{
+	// variable declarations
+	int numTeams;
+	int numPlayers;
+	int counter = 1;
+	int counter2 = 1;
+	int madeCut = 80;
+	
+	// enter number of teams in pool
+	cout << "Enter the number of teams in this pool" << endl;
+	cin >> numTeams;
+	
+	// enter number of players per team
+	
+	cout << "Enter the number of players per team" << endl;
+	cin >> numPlayers;
+	
+	// enter team names
+	
+	string teamNames[numTeams];
+	
+	for (int i=0;i<numTeams;i++)
+	{
+		cout << "Enter team name " << counter << endl;
+		//cout << 1;
+		cin >> teamNames[i];
+		//cout << 2;
+		//cout << teamNames[i] << endl;
+		//cout << 3;
+		counter++;
+	}
+//	for (int r=0;r<numTeams;r++)
+//	{
+//		cout << teamNames[r];
+//	}
+	
+	// enter player names
+	
+	string teamOfPlayers[numTeams][numPlayers+1]; // rows is the teams cols are the players in the teams
+	
+	for(int t=0;t<numTeams;t++)
+	{
+		teamOfPlayers[t][0] = teamNames[t];
+//		cout << teamOfPlayers[t][0];
+//		cout << "Ya!" << endl;
+		
+		for(int w=1;w<=numPlayers;w++)
+		{
+//			cout << teamOfPlayers[t][0] << endl;
+			cout << "Enter the name of player " << counter2 << endl;
+			cin >> teamOfPlayers[t][w];
+//			cout << teamOfPlayers[t][w] << endl;
+//			cout << "YA2!";
+			counter2++; 
+		}
+		counter2 = 1;
+	}
+	
+	// bring in text file into player and money arrays
+	
+	ifstream fin("MajorResults.txt");
+	
+	string field[madeCut];
+	int moneyEarned[madeCut];
+	
+	for(int p=0;p<madeCut;p++)
+	{
+		fin >> field[p] >> moneyEarned[p];
+	}
+	
+	// NEED TO CLOSE FILE HERE
+	
+	// search the teams array for corresponding players in the field and money arrays
+	
+	int moneyTotals[numTeams];
+	for(int g=0;g<numTeams;g++)
+	{
+		moneyTotals[g]=0;
+	}
+	
+	for (int v=0;v<numTeams;v++)
+	{
+		
+		for(int c=1;c<=numPlayers;c++)
+		{
+			for (int b=0;b<madeCut;b++)
+			{
+				if(teamOfPlayers[v][c]	== 	field[b])
+				{
+					moneyTotals[v] += moneyEarned[b];
+					b=madeCut+1;
+				}
+				else
+				{
+					moneyTotals[v] +=0;
+				}
+			}
+			
+		}
+	}
+	
+	// display the highest totals in order and the money earned
+	cout << "________________________________________________________" << endl;
+	for(int c=0;c<numTeams;c++)
+	{
+		int highest = moneyTotals[0];
+		int teamNum = 0;
+		for(int m=0;m<numTeams;m++)
+		{
+			if(moneyTotals[m] > highest)
+			{
+				highest = moneyTotals[m];
+				teamNum = m;
+			}	
+		}		
+	cout << teamOfPlayers[teamNum][0] << " --- $" << highest << endl;
+	moneyTotals[teamNum] = -1;
+	}
+	
+	return 0;
+}
